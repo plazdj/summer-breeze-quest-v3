@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#043a43">
-<title>Summer Breeze Quest V4</title>
+<title>Summer Breeze Quest V5</title>
 <style>
 *{box-sizing:border-box}
 :root{
@@ -83,8 +83,13 @@ h1,h2{font-family:Georgia,"Times New Roman",serif;font-weight:500}
 .board-shell{
  position:relative;width:min(100%,404px);padding:8px;border-radius:20px;
  border:1px solid rgba(233,200,135,.68);
- background:linear-gradient(145deg,rgba(255,255,255,.14),rgba(2,35,41,.28));
- box-shadow:0 20px 54px rgba(0,0,0,.32)
+ background:
+  linear-gradient(145deg,rgba(255,255,255,.18),rgba(2,35,41,.34)),
+  repeating-linear-gradient(135deg,rgba(255,255,255,.03) 0 2px,transparent 2px 6px);
+ box-shadow:
+  0 24px 60px rgba(0,0,0,.38),
+  inset 0 1px 0 rgba(255,255,255,.16),
+  inset 0 -8px 20px rgba(0,0,0,.12)
 }
 canvas{display:block;width:100%;height:auto;border-radius:13px;touch-action:none}
 #flash{position:absolute;inset:8px;border-radius:13px;pointer-events:none;opacity:0;background:radial-gradient(circle,rgba(255,255,255,.75),transparent 63%)}
@@ -105,14 +110,30 @@ canvas{display:block;width:100%;height:auto;border-radius:13px;touch-action:none
 .toast-text{min-width:0;text-align:left}.toast-text small{display:block;font-size:9px;letter-spacing:1.3px;color:var(--gold)}
 .toast-text strong,.toast-text span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .toast-text strong{font-size:16px;margin:5px 0}.toast-text span{font-size:11px;opacity:.75}
-.controls{margin-top:11px;display:flex;flex-direction:column;align-items:center;gap:6px;touch-action:none;user-select:none;-webkit-user-select:none}
-.controls div{display:flex;gap:6px}
-.controls button{
- width:59px;height:47px;border:1px solid rgba(233,200,135,.5);border-radius:13px;
- background:linear-gradient(180deg,#155862,#082f37);color:#fff;font-size:21px;font-weight:900;
- box-shadow:0 6px 15px rgba(0,0,0,.25);touch-action:none
+.controls{
+ margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;
+ touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+ overscroll-behavior:none
 }
-.controls button:active{transform:scale(.94);background:#1a6872}
+.controls div{display:flex;gap:10px}
+.controls button{
+ width:78px;height:66px;border:1px solid rgba(255,255,255,.26);border-radius:20px;
+ background:
+  radial-gradient(circle at 50% 18%,rgba(255,255,255,.19),transparent 34%),
+  linear-gradient(180deg,#1a707b,#073942);
+ color:#fff;font-size:28px;font-weight:900;
+ box-shadow:
+  0 10px 20px rgba(0,0,0,.28),
+  inset 0 1px 0 rgba(255,255,255,.2),
+  inset 0 -4px 10px rgba(0,0,0,.18);
+ touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+ appearance:none;-webkit-appearance:none
+}
+.controls button:active{
+ transform:scale(.94);
+ background:linear-gradient(180deg,#208894,#0a4650);
+ box-shadow:0 4px 10px rgba(0,0,0,.25),inset 0 2px 8px rgba(0,0,0,.22)
+}
 .hint{font-size:11px;opacity:.66;margin:8px 0 0}
 .result{position:relative;align-items:center;justify-content:center;text-align:center;padding:20px;overflow:auto;background:radial-gradient(circle at center,rgba(10,111,120,.5),transparent 45%),linear-gradient(#062f37,#021a1f)}
 .result-card{position:relative;z-index:2;width:min(93vw,560px);padding:30px 21px;border-radius:24px;border:1px solid rgba(233,200,135,.67);background:rgba(4,48,56,.82);box-shadow:0 25px 70px rgba(0,0,0,.43);backdrop-filter:blur(10px)}
@@ -135,7 +156,13 @@ canvas{display:block;width:100%;height:auto;border-radius:13px;touch-action:none
 @keyframes fall{to{transform:translateY(115vh) rotate(700deg)}}
 @keyframes particle{to{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.15)}}
 @keyframes badge{0%,100%{opacity:0;transform:translateY(-8px)}15%,75%{opacity:1;transform:none}}
-@media(max-height:710px){.board-shell{width:min(80vw,322px)}.controls button{height:40px}.hint{display:none}.toast{bottom:99px}}
+@media(max-height:710px){
+ .board-shell{width:min(78vw,312px)}
+ .controls{margin-top:8px;gap:7px}
+ .controls div{gap:7px}
+ .controls button{width:68px;height:54px;font-size:24px}
+ .hint{display:none}.toast{bottom:114px}
+}
 </style>
 </head>
 <body>
@@ -300,31 +327,172 @@ function moveEnemy(e){
 }
 function rr(x,y,w,h,r){ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
 function draw(){
- const g=ctx.createLinearGradient(0,0,0,480);g.addColorStop(0,"#e5c38c");g.addColorStop(1,"#c79455");ctx.fillStyle=g;ctx.fillRect(0,0,360,480);
+ // Sabbia con sfumatura e trama
+ const g=ctx.createLinearGradient(0,0,0,480);
+ g.addColorStop(0,"#f0d19b");
+ g.addColorStop(.45,"#ddb477");
+ g.addColorStop(1,"#be8244");
+ ctx.fillStyle=g;ctx.fillRect(0,0,360,480);
+
+ // granelli di sabbia
+ ctx.save();
+ ctx.globalAlpha=.17;
+ for(let i=0;i<170;i++){
+   const sx=(i*83)%360, sy=(i*137)%480;
+   const r=(i%3)+.45;
+   ctx.fillStyle=i%2?"#8f5b2b":"#fff2cf";
+   ctx.beginPath();ctx.arc(sx,sy,r,0,Math.PI*2);ctx.fill();
+ }
+ ctx.restore();
+
+ // riflesso caldo centrale
+ const glow=ctx.createRadialGradient(180,210,20,180,210,250);
+ glow.addColorStop(0,"rgba(255,246,214,.23)");
+ glow.addColorStop(1,"rgba(255,246,214,0)");
+ ctx.fillStyle=glow;ctx.fillRect(0,0,360,480);
+
  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
   if(MAP[y][x]){
-   const wall=ctx.createLinearGradient(x*T,y*T,(x+1)*T,(y+1)*T);wall.addColorStop(0,"#0b8590");wall.addColorStop(1,"#04515c");
-   ctx.fillStyle=wall;rr(x*T+3,y*T+3,T-6,T-6,6);
-   ctx.fillStyle="rgba(255,255,255,.12)";ctx.fillRect(x*T+7,y*T+7,T-14,3)
-  }else{ctx.strokeStyle="rgba(81,45,13,.11)";ctx.strokeRect(x*T,y*T,T,T)}
+   const px=x*T+3,py=y*T+3;
+   const wall=ctx.createLinearGradient(px,py,px+T,py+T);
+   wall.addColorStop(0,"#16a1aa");
+   wall.addColorStop(.48,"#0b7580");
+   wall.addColorStop(1,"#03434d");
+
+   ctx.shadowColor="rgba(1,38,45,.45)";
+   ctx.shadowBlur=7;
+   ctx.shadowOffsetY=3;
+   ctx.fillStyle=wall;rr(px,py,T-6,T-6,7);
+
+   ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+   const shine=ctx.createLinearGradient(px,py,px,py+T-6);
+   shine.addColorStop(0,"rgba(255,255,255,.28)");
+   shine.addColorStop(.26,"rgba(255,255,255,.05)");
+   shine.addColorStop(1,"rgba(0,0,0,.08)");
+   ctx.fillStyle=shine;rr(px+2,py+2,T-10,T-10,5);
+
+   // leggero bordo acqua
+   ctx.strokeStyle="rgba(201,252,255,.18)";
+   ctx.lineWidth=1;
+   ctx.beginPath();ctx.roundRect(px+.5,py+.5,T-7,T-7,7);ctx.stroke();
+  }else{
+   ctx.strokeStyle="rgba(93,56,21,.08)";
+   ctx.strokeRect(x*T,y*T,T,T);
+  }
  }
- ctx.textAlign="center";ctx.textBaseline="middle";ctx.font="bold 22px Georgia";ctx.fillStyle="#fff7d7";ctx.shadowColor="rgba(53,27,0,.55)";ctx.shadowBlur=5;
- notes.forEach(n=>ctx.fillText("♪",n.x*T+15,n.y*T+15));ctx.shadowBlur=0;drawFan();enemies.forEach(drawVortex)
+
+ // note con bagliore
+ ctx.textAlign="center";ctx.textBaseline="middle";
+ ctx.font="bold 22px Georgia";
+ notes.forEach(n=>{
+   const nx=n.x*T+15,ny=n.y*T+15;
+   const ng=ctx.createRadialGradient(nx,ny,1,nx,ny,12);
+   ng.addColorStop(0,"rgba(255,255,255,.42)");
+   ng.addColorStop(1,"rgba(255,255,255,0)");
+   ctx.fillStyle=ng;ctx.beginPath();ctx.arc(nx,ny,12,0,Math.PI*2);ctx.fill();
+   ctx.fillStyle="#fffaf0";
+   ctx.shadowColor="rgba(255,245,180,.9)";
+   ctx.shadowBlur=9;
+   ctx.fillText("♪",nx,ny+1);
+   ctx.shadowBlur=0;
+ });
+
+ drawFan();
+ enemies.forEach(drawVortex);
 }
 function drawFan(){
- const px=player.x*T+15,py=player.y*T+15;ctx.save();ctx.translate(px,py);
- ctx.shadowColor="rgba(45,8,91,.6)";ctx.shadowBlur=8;
- const g=ctx.createLinearGradient(-13,-8,13,8);g.addColorStop(0,"#5420a1");g.addColorStop(.5,"#ed63d0");g.addColorStop(1,"#28116e");
- ctx.fillStyle=g;ctx.beginPath();ctx.moveTo(0,10);ctx.arc(0,5,14,Math.PI,Math.PI*2);ctx.closePath();ctx.fill();ctx.shadowBlur=0;
- ctx.strokeStyle="#ffdc94";ctx.lineWidth=1.5;for(let a=-12;a<=12;a+=4){ctx.beginPath();ctx.moveTo(0,10);ctx.lineTo(a,-3);ctx.stroke()}
- ctx.fillStyle="#e0aa59";ctx.beginPath();ctx.arc(0,10,2.7,0,Math.PI*2);ctx.fill();ctx.restore()
+ const px=player.x*T+15,py=player.y*T+15;
+ ctx.save();ctx.translate(px,py);
+
+ // ombra a terra
+ ctx.save();
+ ctx.translate(0,6);
+ ctx.scale(1.15,.45);
+ ctx.fillStyle="rgba(47,21,74,.28)";
+ ctx.beginPath();ctx.arc(0,0,12,0,Math.PI*2);ctx.fill();
+ ctx.restore();
+
+ ctx.shadowColor="rgba(56,9,96,.72)";
+ ctx.shadowBlur=12;
+
+ const g=ctx.createLinearGradient(-14,-8,14,10);
+ g.addColorStop(0,"#342077");
+ g.addColorStop(.34,"#6c39be");
+ g.addColorStop(.67,"#eb5ed0");
+ g.addColorStop(1,"#28115f");
+
+ ctx.fillStyle=g;
+ ctx.beginPath();
+ ctx.moveTo(0,10);
+ ctx.arc(0,5,14,Math.PI,Math.PI*2);
+ ctx.closePath();
+ ctx.fill();
+
+ // bordino brillante
+ ctx.shadowBlur=0;
+ ctx.strokeStyle="rgba(255,232,251,.65)";
+ ctx.lineWidth=1.2;
+ ctx.beginPath();
+ ctx.moveTo(-13,5);
+ ctx.arc(0,5,13,Math.PI,Math.PI*2);
+ ctx.stroke();
+
+ // stecche realistiche
+ const rg=ctx.createLinearGradient(0,-4,0,11);
+ rg.addColorStop(0,"#ffe9a9");
+ rg.addColorStop(1,"#b76d2d");
+ ctx.strokeStyle=rg;
+ ctx.lineWidth=1.6;
+ for(let a=-12;a<=12;a+=4){
+   ctx.beginPath();
+   ctx.moveTo(0,10);
+   ctx.lineTo(a,-3);
+   ctx.stroke();
+ }
+
+ // perno
+ const pg=ctx.createRadialGradient(-1,8,1,0,10,4);
+ pg.addColorStop(0,"#fff0b9");
+ pg.addColorStop(1,"#a76527");
+ ctx.fillStyle=pg;
+ ctx.beginPath();ctx.arc(0,10,3,0,Math.PI*2);ctx.fill();
+
+ ctx.restore();
 }
 function drawVortex(e,i){
- ctx.save();ctx.translate(e.x*T+15,e.y*T+15);ctx.rotate(performance.now()/620*(i?1:-1));
- const glow=ctx.createRadialGradient(0,0,2,0,0,15);glow.addColorStop(0,"rgba(255,255,255,.42)");glow.addColorStop(1,"rgba(160,235,249,.04)");
- ctx.fillStyle=glow;ctx.beginPath();ctx.arc(0,0,15,0,Math.PI*2);ctx.fill();
- ctx.strokeStyle=i?"#9eeaff":"#e6fbff";ctx.lineWidth=2.6;ctx.beginPath();
- for(let j=0;j<44;j++){let a=j*.59,r=j*.285,xx=Math.cos(a)*r,yy=Math.sin(a)*r;j?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy)}ctx.stroke();ctx.restore()
+ const cx=e.x*T+15,cy=e.y*T+15;
+ ctx.save();ctx.translate(cx,cy);
+ ctx.rotate(performance.now()/650*(i?1:-1));
+
+ // alone trasparente
+ const glow=ctx.createRadialGradient(0,0,2,0,0,17);
+ glow.addColorStop(0,"rgba(255,255,255,.55)");
+ glow.addColorStop(.35,"rgba(151,232,247,.22)");
+ glow.addColorStop(1,"rgba(100,210,232,0)");
+ ctx.fillStyle=glow;ctx.beginPath();ctx.arc(0,0,17,0,Math.PI*2);ctx.fill();
+
+ // doppia spirale
+ for(let pass=0;pass<2;pass++){
+   ctx.strokeStyle=pass===0
+     ? (i?"rgba(107,223,247,.92)":"rgba(237,252,255,.96)")
+     : "rgba(255,255,255,.42)";
+   ctx.lineWidth=pass===0?2.6:1.1;
+   ctx.beginPath();
+   for(let j=0;j<46;j++){
+     let a=j*.58+(pass*.18),r=j*.28-(pass*1.8);
+     let xx=Math.cos(a)*r,yy=Math.sin(a)*r;
+     j?ctx.lineTo(xx,yy):ctx.moveTo(xx,yy);
+   }
+   ctx.stroke();
+ }
+
+ // occhi appena visibili
+ ctx.rotate(-performance.now()/650*(i?1:-1));
+ ctx.fillStyle="rgba(2,29,36,.76)";
+ ctx.beginPath();ctx.arc(-4,-2,1.7,0,Math.PI*2);ctx.fill();
+ ctx.beginPath();ctx.arc(4,-2,1.7,0,Math.PI*2);ctx.fill();
+
+ ctx.restore();
 }
 function loop(now){
  if(!running)return;if(now-lastEnemy>570){enemies.forEach((e,i)=>{if(i===0||Math.random()<.77)moveEnemy(e)});lastEnemy=now;hit()}
@@ -337,5 +505,21 @@ document.querySelectorAll("[data-dir]").forEach(b=>b.addEventListener("pointerdo
 addEventListener("keydown",e=>{const k={ArrowUp:[0,-1],ArrowDown:[0,1],ArrowLeft:[-1,0],ArrowRight:[1,0]}[e.key];if(k){e.preventDefault();move(...k)}});
 let touch=null;canvas.onpointerdown=e=>touch={x:e.clientX,y:e.clientY};canvas.onpointerup=e=>{if(!touch)return;const dx=e.clientX-touch.x,dy=e.clientY-touch.y;touch=null;if(Math.max(Math.abs(dx),Math.abs(dy))<18)return;Math.abs(dx)>Math.abs(dy)?move(dx>0?1:-1,0):move(0,dy>0?1:-1)};
 document.addEventListener("gesturestart",e=>e.preventDefault(),{passive:false});
+
+// Blocco definitivo dello zoom da doppio tocco sui controlli.
+document.querySelectorAll(".controls, .controls button, #restartBtn").forEach(el=>{
+  ["touchstart","touchmove","touchend","touchcancel"].forEach(type=>{
+    el.addEventListener(type,e=>{e.preventDefault()}, {passive:false});
+  });
+  el.addEventListener("dblclick",e=>e.preventDefault(),{passive:false});
+});
+let lastControlTouch=0;
+document.addEventListener("touchend",e=>{
+  if(!e.target.closest(".controls, #restartBtn"))return;
+  const now=Date.now();
+  if(now-lastControlTouch<450)e.preventDefault();
+  lastControlTouch=now;
+},{passive:false});
+
 </script>
 </body></html>
